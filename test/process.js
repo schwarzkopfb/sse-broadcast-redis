@@ -3,6 +3,7 @@
 var sse = require('sse-broadcast')(),
     app = require('http').createServer(listener),
     adt = require('../')(sse, process.env),
+    end = find(process.argv, /--end-fn=(.*)/),
     p   = process.env.http_port,
     tmp
 
@@ -23,14 +24,34 @@ function listener(req, res) {
         res.end()
 }
 
-app.listen(p, function () {
+function find(arr, expr) {
+    var res = null
+
+    arr.forEach(function (item, i) {
+        var match
+
+        if (match = item.match(expr))
+            res = match
+    })
+
+    return res
+}
+
+app.listen(p, function (err) {
+    if (err)
+        throw err
+
     process.send('ready')
 })
 
 process.on('message', function () {
     app.close(function () {
         // disconnect adapter
-        adt.end() // todo: `end()` is too rude
+        if (end)
+            adt[ end[ 1 ] ]()
+        else
+            adt.unref()
+
         // close IPC channel
         process.disconnect()
     })

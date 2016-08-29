@@ -1,0 +1,46 @@
+{
+  "name": "sse-broadcast-redis",
+  "version": "0.0.1",
+  "description": "Redis adapter for sse-broadcast",
+  "main": "index.js",
+  "scripts": {
+    "test": "tap test/basic.js",
+    "coverage": "istanbul cover test/basic.js test/process.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/schwarzkopfb/sse-broadcast-redis.git"
+  },
+  "keywords": [
+    "sse",
+    "server",
+    "sent",
+    "events",
+    "publish",
+    "subscribe",
+    "pubsub",
+    "broadcast",
+    "sse-broadcast",
+    "redis",
+    "multiple",
+    "process"
+  ],
+  "author": "Schwarzkopf Balázs <schwarzkopfb@icloud.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/schwarzkopfb/sse-broadcast-redis/issues"
+  },
+  "homepage": "https://github.com/schwarzkopfb/sse-broadcast-redis#readme",
+  "devDependencies": {
+    "istanbul": "^0.4.5",
+    "nyc": "^8.1.0",
+    "tap": "^7.0.0"
+  },
+  "dependencies": {
+    "mdbid": "^1.0.0",
+    "redis": "^2.6.2"
+  },
+  "peerDependencies": {
+    "sse-broadcast": "0.0.3"
+  }
+}

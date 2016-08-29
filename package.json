@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "tap test/basic.js",
-    "coverage": "istanbul cover test/basic.js test/process.js"
+    "cover": "node test/basic.js --cov && istanbul report html"
   },
   "repository": {
     "type": "git",
@@ -33,7 +33,9 @@
   "homepage": "https://github.com/schwarzkopfb/sse-broadcast-redis#readme",
   "devDependencies": {
     "istanbul": "^0.4.5",
+    "mkdirp": "^0.5.1",
     "nyc": "^8.1.0",
+    "rimraf": "^2.5.4",
     "tap": "^7.0.0"
   },
   "dependencies": {

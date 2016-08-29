@@ -9,15 +9,14 @@ function fork(port) {
     var path = __dirname + '/process.js',
         opts = { env: env(port) }
 
-    if (process.env.running_under_istanbul)
+    if (~process.argv.indexOf('--cov'))
         return child.fork('./node_modules/.bin/istanbul', [
             'cover',
             '--report', 'none',
             '--print', 'none',
             '--include-pid',
-            path, '--'
-        ].concat(process.argv.slice(2)), opts)
-        // todo:  WHY: "No coverage information was collected, exit without writing coverage information"?
+            path
+        ], opts)
     else
         return child.fork(path, opts)
 }

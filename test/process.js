@@ -30,7 +30,7 @@ app.listen(p, function () {
 process.on('message', function () {
     app.close(function () {
         // disconnect adapter
-        adt.unref()
+        adt.end() // todo: `end()` is too rude
         // close IPC channel
         process.disconnect()
     })

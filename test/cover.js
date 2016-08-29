@@ -38,9 +38,9 @@ function onerror(err) {
 }
 
 function onclose(cb) {
-    return function (code) {
+    return function (code, signal) {
         if (code != 0)
-            cb(new Error('non-zero exit code: ' + code))
+            cb(new Error('non-zero exit code: ' + code + ', signal: ' + signal))
         else
             cb(null)
     }

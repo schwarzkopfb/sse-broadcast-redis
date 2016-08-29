@@ -10,7 +10,7 @@ var http  = require('http'),
 
 function fork(port) {
     var path = __dirname + '/process.js',
-        opts = { env: env(port) }
+        opts = { env: env(port), stdio: 'inherit' }
 
     if (~process.argv.indexOf('--cov'))
         return child.fork('./node_modules/.bin/istanbul', [

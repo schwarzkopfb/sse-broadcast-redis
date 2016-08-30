@@ -39,6 +39,8 @@ SSEBroadcasterRedisAdapter.prototype.onpmessage = function onpmessage(pattern, c
         return
 
     message = JSON.parse(message)
+    // do not re-emit this publish
+    // (and start an infinite ping-pong match)
     message.emit = false
     this.broadcaster.publish(channel.substring(30), message)
 }

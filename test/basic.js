@@ -1,79 +1,82 @@
 'use strict'
 
 var http  = require('http'),
+    join  = require('path').join,
     child = require('child_process'),
     test  = require('tap'),
-    env   = require('./env'),
-    ctr   = 0,
-    ended,
-    c1, c2
+    cred  = require('./credentials'),
+    proc1 = fork(8000),
+    proc2 = fork(8001),
+    rc    = 0 // ready proc counter
+
+test.plan(1)
+boot()
 
 function fork(port) {
-    var path = __dirname + '/process.js',
-        opts = { env: env(port), stdio: 'inherit' }
+    var path = join(__dirname, 'process.js'),
+        opts = { env: cred, stdio: 'inherit' },
+        args = [ port, process.argv[ 3 ] || '' ],
+        proc
 
-    if (~process.argv.indexOf('--cov'))
-        return child.fork('./node_modules/.bin/istanbul', [
+    if (process.argv[ 2 ] === 'cover')
+        proc = child.fork('./node_modules/.bin/istanbul', [
             'cover',
             '--report', 'none',
             '--print', 'none',
             '--include-pid',
             path, '--'
-        ].concat(process.argv.slice(2)), opts)
+        ].concat(args), opts)
     else
-        return child.fork(path, opts)
+        proc = child.fork(path, args, opts)
+
+    proc.port = port
+    return proc
 }
 
-function get(port, path, cb) {
-    http.get('http://127.0.0.1:' + port + path, function (res) {
-        res.body = ''
+function wait(child, message, cb) {
+    child.once('message', function (msg) {
+        if (msg === message)
+            cb()
+    })
+}
+
+function onready() {
+    if (++rc === 2)
+        start()
+}
+
+function boot() {
+    wait(proc1, 'ready', onready)
+    wait(proc2, 'ready', onready)
+}
+
+function get(child, path, cb) {
+    http.get('http://127.0.0.1:' + child.port + path, function (res) {
+        var data = ''
+        res.setEncoding('utf8')
         res.on('data', function (chunk) {
-            res.body += chunk.toString('utf8')
+            data += chunk
         })
-        cb(res)
-    })
-}
-
-function wait(child) {
-    child.on('message', function () {
-        if (++ctr === 2)
-            ready()
-    })
-}
-
-function ready() {
-    get(8000, '/events', function (stream) {
-        stream.on('end', function () {
-            test.equal(stream.body, 'event: test\ndata: 8000\n\n')
-            done()
-        })
-
-        get(8001, '/send', function (res) {
-            res.on('end', function () {
-                get(8000, '/close', function (res) {
-                    res.on('end', done)
-                })
-            })
+        res.on('end', function () {
+            cb && cb(data)
         })
     })
 }
 
-function done() {
-    if (ended)
-        close()
-    else
-        ended = true
+function start() {
+    wait(proc1, 'subscribe', function () {
+        wait(proc1, 'finish', function () {
+            get(proc1, '/close')
+        })
+        get(proc2, '/send')
+    })
+    get(proc1, '/events', function (data) {
+        test.equal(data, 'event: test\ndata: 8001\n\n')
+        finish()
+    })
 }
 
-function close() {
-    c1.send('close')
-    c2.send('close')
+function finish() {
+    proc1.send('close')
+    proc2.send('close')
 }
-
-test.plan(1)
-
-c1 = fork(8000)
-c2 = fork(8001)
-
-wait(c1)
-wait(c2)

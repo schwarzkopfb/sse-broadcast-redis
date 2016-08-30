@@ -1,23 +1,37 @@
 'use strict'
 
-var sse = require('sse-broadcast')(),
-    app = require('http').createServer(listener),
-    adt = require('../')(sse, process.env),
-    end = find(process.argv, /--end-fn=(.*)/),
-    p   = process.env.http_port,
-    tmp
+var sse     = require('sse-broadcast')(),
+    app     = require('http').createServer(listener),
+    args    = process.argv,
+    adapter = require('../')(sse, process.env),
+    port    = args[ 2 ] || 8000,
+    end     = args[ 3 ] || 'unref',
+    open
+
+app.listen(port, '127.0.0.1', function () {
+    adapter.clients.sub.on('pmessage', function () {
+        process.send('finish')
+    })
+    adapter.clients.sub.psubscribe('*:sseb:test', function () {
+        process.send('ready')
+    })
+})
 
 function listener(req, res) {
     if (req.url === '/events') {
-        sse.subscribe('test', tmp = res)
-        sse.publish('test', 'test', p)
+        sse.on('subscribe', function () {
+            process.send('subscribe')
+        })
+        sse.subscribe('test', open = res)
+        res.writeHead(200)
+        res.flushHeaders()
     }
     else if (req.url === '/send') {
-        sse.publish('test', 'test', p)
+        sse.publish('test', 'test', port)
         res.end()
     }
     else if (req.url === '/close') {
-        tmp.end()
+        open.end()
         res.end()
     }
     else
@@ -37,20 +51,13 @@ function find(arr, expr) {
     return res
 }
 
-app.listen(p, function (err) {
-    if (err)
-        throw err
+process.on('message', function (msg) {
+    if (msg !== 'close')
+        return
 
-    process.send('ready')
-})
-
-process.on('message', function () {
     app.close(function () {
         // disconnect adapter
-        if (end)
-            adt[ end[ 1 ] ]()
-        else
-            adt.unref()
+        adapter[ end ]()
 
         // close IPC channel
         process.disconnect()

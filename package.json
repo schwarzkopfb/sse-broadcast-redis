@@ -1,11 +1,12 @@
 {
   "name": "sse-broadcast-redis",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "Redis adapter for sse-broadcast",
   "main": "index.js",
   "scripts": {
     "test": "tap test/basic.js",
-    "cover": "node test/cover && cat coverage/lcov.info | node_modules/.bin/coveralls"
+    "cover": "node test/cover",
+    "cover-and-upload": "node test/cover && cat coverage/lcov.info | node_modules/.bin/coveralls"
   },
   "repository": {
     "type": "git",
@@ -44,6 +45,6 @@
     "redis": "^2.6.2"
   },
   "peerDependencies": {
-    "sse-broadcast": "0.0.3"
+    "sse-broadcast": "0.0.4"
   }
 }

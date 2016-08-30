@@ -13,7 +13,7 @@ rmrf.sync(cdir)
 doTests(finish)
 
 function doTest(endFn, cb) {
-    var test = spawn(exec, [ resolve(__dirname, 'basic.js'), '--cov', '--end-fn=' + endFn ])
+    var test = spawn(exec, [ resolve(__dirname, 'basic.js'), 'cover', endFn ])
 
     test.on('error', cb)
         .on('close', onclose(cb))

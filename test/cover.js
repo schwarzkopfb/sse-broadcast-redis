@@ -7,30 +7,45 @@ var resolve = require('path').resolve,
     exec    = process.execPath,
     dir     = resolve(__dirname, '..'),
     cdir    = resolve(dir, 'coverage'),
-    tests   = [ 'unref', 'quit', 'end' ]
+    fnTests = [ 'unref', 'quit', 'end' ]
 
 rmrf.sync(cdir)
-doTests(finish)
+doBasicTests(function () {
+    doTest('api.js', finish)
+})
 
-function doTest(endFn, cb) {
-    var test = spawn(exec, [ resolve(__dirname, 'basic.js'), 'cover', endFn ])
+function doBasicTest(endFn, cb) {
+    var test = spawn(exec, [ resolve(__dirname, 'basic.js'), 'cover', endFn ], { stdio: 'inherit' })
 
     test.on('error', cb)
         .on('close', onclose(cb))
 }
 
-function doTests(cb, i) {
+function doBasicTests(cb, i) {
     if (i === undefined)
         i = 0
 
-    doTest(tests[ i++ ], function (err) {
+    doBasicTest(fnTests[ i++ ], function (err) {
         if (err)
             throw err
-        else if (i < tests.length)
-            doTests(cb, i)
+        else if (i < fnTests.length)
+            doBasicTests(cb, i)
         else
-            cb(null)
+            cb()
     })
+}
+
+function doTest(file, cb) {
+    var test = spawn('./node_modules/.bin/istanbul', [
+        'cover',
+        '--report', 'none',
+        '--print', 'none',
+        '--include-pid',
+        resolve(__dirname, file)
+    ])
+
+    test.on('error', onerror)
+        .on('close', onclose(cb))
 }
 
 function onerror(err) {

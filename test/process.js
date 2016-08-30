@@ -9,10 +9,10 @@ var sse     = require('sse-broadcast')(),
     open
 
 app.listen(port, '127.0.0.1', function () {
-    adapter.clients.sub.on('pmessage', function () {
+    adapter.sub.on('pmessage', function () {
         process.send('finish')
     })
-    adapter.clients.sub.psubscribe('*:sseb:test', function () {
+    adapter.sub.psubscribe('*:sseb:test', function () {
         process.send('ready')
     })
 })

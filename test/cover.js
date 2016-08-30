@@ -52,7 +52,5 @@ function finish() {
     report.on('error', onerror)
           .on('close', function () {
               open(resolve(cdir, 'lcov-report/index.html'))
-
-              // todo: coveralls upload
           })
 }

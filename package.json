@@ -37,7 +37,7 @@
     "istanbul": "^0.4.5",
     "opener": "^1.4.1",
     "rimraf": "^2.5.4",
-    "sse-broadcast": "0.0.3",
+    "sse-broadcast": "~0.0.4",
     "tap": "^7.0.0"
   },
   "dependencies": {
@@ -45,6 +45,6 @@
     "redis": "^2.6.2"
   },
   "peerDependencies": {
-    "sse-broadcast": "0.0.4"
+    "sse-broadcast": "~0.0.4"
   }
 }

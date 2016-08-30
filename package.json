@@ -32,6 +32,7 @@
   },
   "homepage": "https://github.com/schwarzkopfb/sse-broadcast-redis#readme",
   "devDependencies": {
+    "coveralls": "^2.11.12",
     "istanbul": "^0.4.5",
     "opener": "^1.4.1",
     "rimraf": "^2.5.4",

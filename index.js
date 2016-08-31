@@ -42,6 +42,14 @@ function SSEBroadcasterRedisAdapter(broadcaster, optionsOrClient) {
 
 inherits(SSEBroadcasterRedisAdapter, EventEmitter)
 
+// static properties
+Object.defineProperty(exports, 'version', {
+    enumerable: true,
+    get: function () {
+        return require('./package.json').version
+    }
+})
+
 SSEBroadcasterRedisAdapter.prototype.onerror = function onerror(err) {
     this.emit('error', err)
 }

@@ -72,7 +72,7 @@ methods of internally used redis clients.
 
 #### Event: 'error'
 
-Delegate `error` events of internal clients.
+Delegated `error` events of internal clients.
 
 ## Compatibility
 

@@ -19,7 +19,7 @@ function SSEBroadcasterRedisAdapter(broadcaster, optionsOrClient) {
         'broadcaster must be an instance of SSEBroadcaster'
     )
 
-    this.id          = id()
+    this.id = id()
     this.broadcaster = broadcaster
 
     if (optionsOrClient instanceof redis.RedisClient) {
@@ -43,10 +43,17 @@ function SSEBroadcasterRedisAdapter(broadcaster, optionsOrClient) {
 inherits(SSEBroadcasterRedisAdapter, EventEmitter)
 
 // static properties
-Object.defineProperty(exports, 'version', {
-    enumerable: true,
-    get: function () {
-        return require('./package.json').version
+Object.defineProperties(exports, {
+    Adapter: {
+        enumerable: true,
+        value: SSEBroadcasterRedisAdapter
+    },
+
+    version: {
+        enumerable: true,
+        get: function () {
+            return require('./package.json').version
+        }
     }
 })
 

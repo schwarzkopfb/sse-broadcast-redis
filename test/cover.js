@@ -15,7 +15,7 @@ doBasicTests(function () {
 })
 
 function doBasicTest(endFn, cb) {
-    var test = spawn(exec, [ resolve(__dirname, 'basic.js'), 'cover', endFn ], { stdio: 'inherit' })
+    var test = spawn(exec, [ resolve(__dirname, 'basic.js'), 'cover', endFn ])
 
     test.on('error', cb)
         .on('close', onclose(cb))

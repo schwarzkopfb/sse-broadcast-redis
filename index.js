@@ -5,9 +5,9 @@ exports = module.exports = SSEBroadcasterRedisAdapter
 var assert       = require('assert'),
     inherits     = require('util').inherits,
     EventEmitter = require('events'),
+    Broadcaster  = require('sse-broadcast'),
     redis        = require('redis'),
-    id           = require('mdbid'),
-    Broadcaster  = require('sse-broadcast')
+    id           = require('mdbid')
 
 function SSEBroadcasterRedisAdapter(broadcaster, optionsOrClient) {
     if (!(this instanceof SSEBroadcasterRedisAdapter))

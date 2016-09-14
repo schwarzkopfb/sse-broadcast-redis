@@ -1,6 +1,6 @@
 {
   "name": "sse-broadcast-redis",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Redis adapter for sse-broadcast",
   "main": "index.js",
   "scripts": {
@@ -45,6 +45,6 @@
     "redis": "^2.6.2"
   },
   "peerDependencies": {
-    "sse-broadcast": "~0.1.0"
+    "sse-broadcast": "^0"
   }
 }
